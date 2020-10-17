@@ -24,7 +24,7 @@ export default {
   background-color: #ccc;
   line-height: 40px;
   padding-left: 10px;
-  font-size: 16px;
+  font-size: 13px;
   font-weight: bold;
 }
 

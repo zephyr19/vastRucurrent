@@ -20,9 +20,6 @@ export default {
       get() {
         return this.$store.state.timeSeriesCheckedState
       },
-      set(value) {
-        this.$store.commit('updateTimeSeriesCheckedState', value)
-      },
     },
   },
   data() {
