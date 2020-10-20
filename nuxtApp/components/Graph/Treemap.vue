@@ -40,7 +40,6 @@ export default {
     }
   },
   mounted() {
-    console.log(this.$store.state.defaultTimeRange)
     api
       .getTreemapDataByTimeRange(this.$store.state.defaultTimeRange)
       .then((response) => {

@@ -21,6 +21,9 @@ export default {
         return this.$store.state.timeSeriesCheckedState
       },
     },
+    datatye() {
+      return this.$store.state.datatype
+    },
   },
   data() {
     return {
@@ -69,6 +72,7 @@ export default {
             lower95: parseFloat(d.lower95),
             avg: parseFloat(d.avg),
             upper95: parseFloat(d.upper95),
+            std: parseFloat(d.std),
           }
         })
 
@@ -80,6 +84,7 @@ export default {
               lower95: parseFloat(d.lower95),
               avg: parseFloat(d.avg),
               upper95: parseFloat(d.upper95),
+              std: parseFloat(d.std),
             }
           })
           _this.makeChart(static_data, mobile_data)
@@ -109,6 +114,10 @@ export default {
         })
     },
     addY(g, yAxis, margin, chartWidth, chartHeight) {
+      let yText = '(cpm)'
+      if (this.datatye.length == 1 && this.datatye[0] == 'uncertainty') {
+        yText = '(STD)'
+      }
       g.append('g')
         .attr('class', 'y axis')
         .call(yAxis)
@@ -117,7 +126,7 @@ export default {
         .attr('y', 6)
         .attr('dy', '.71em')
         .style('text-anchor', 'end')
-        .text('(cpm)')
+        .text(yText)
     },
     addLegend(g) {
       let legendWidth = 70,
@@ -132,14 +141,8 @@ export default {
         .attr('class', 'legend')
         .attr('transform', 'translate(0, -5)')
 
-      // legend.append('rect')
-      //   .attr('class', 'legend-bg')
-      //   .attr('width',  legendWidth)
-      //   .attr('height', legendHeight);
-
       legend
         .append('line')
-        // .attr('class', 'static_uncertainty')
         .attr('x1', legendMargin.left)
         .attr('y1', legendMargin.top + span)
         .attr('x2', legendMargin.left + lineWidth)
@@ -147,15 +150,21 @@ export default {
         .style('stroke', 'rgba(224, 4, 255, 0.6)')
         .style('stroke-width', 2)
 
+      let legendText =
+        'Average radiation readings and 95% confidence interval of all SSs'
+      if (this.datatye.length == 1 && this.datatye[0] == 'radiation') {
+        legendText = 'Average radiation readings of all SSs'
+      } else if (this.datatye.length == 1 && this.datatye[0] == 'uncertainty') {
+        legendText = 'Standard deviation of all SSs'
+      }
+
       legend
         .append('text')
         .attr('x', legendMargin.left + lineWidth)
         .attr('y', legendMargin.top + span)
         .attr('dx', '.5em')
         .attr('dy', '.4em')
-        .text(
-          'Average radiation readings and 95% confidence interval of all SSs'
-        )
+        .text(legendText)
 
       legend
         .append('line')
@@ -167,15 +176,21 @@ export default {
         .style('stroke', 'rgba(54,95,139,0.5)')
         .style('stroke-width', 2)
 
+      let legendText2 =
+        'Average radiation readings and 95% confidence interval of all MSs'
+      if (this.datatye.length == 1 && this.datatye[0] == 'radiation') {
+        legendText2 = 'Average radiation readings of all MSs'
+      } else if (this.datatye.length == 1 && this.datatye[0] == 'uncertainty') {
+        legendText2 = 'Standard deviation of all MSs'
+      }
+
       legend
         .append('text')
         .attr('x', legendMargin.left + lineWidth)
         .attr('y', legendMargin.top + span * 3)
         .attr('dx', '.5em')
         .attr('dy', '.4em')
-        .text(
-          'Average radiation readings and 95% confidence interval of all MSs'
-        )
+        .text(legendText2)
     },
     addStaticLegend(g) {
       let legendWidth = 70,
@@ -199,15 +214,21 @@ export default {
         .style('stroke', 'rgba(224, 4, 255, 0.6)')
         .style('stroke-width', 2)
 
+      let legendText2 =
+        'Average radiation readings and 95% confidence interval of all SSs'
+      if (this.datatye.length == 1 && this.datatye[0] == 'radiation') {
+        legendText2 = 'Average radiation readings of all SSs'
+      } else if (this.datatye.length == 1 && this.datatye[0] == 'uncertainty') {
+        legendText2 = 'Standard deviation of all SSs'
+      }
+
       legend
         .append('text')
         .attr('x', legendMargin.left + lineWidth)
         .attr('y', legendMargin.top + span)
         .attr('dx', '.5em')
         .attr('dy', '.4em')
-        .text(
-          'Average radiation readings and 95% confidence interval of all SSs'
-        )
+        .text(legendText2)
     },
     addMobileLegend(g) {
       let legendWidth = 70,
@@ -231,15 +252,82 @@ export default {
         .style('stroke', 'rgba(54,95,139,0.5)')
         .style('stroke-width', 2)
 
+      let legendText =
+        'Average radiation readings and 95% confidence interval of all MSs'
+      if (this.datatye.length == 1 && this.datatye[0] == 'radiation') {
+        legendText = 'Average radiation readings of all MSs'
+      } else if (this.datatye.length == 1 && this.datatye[0] == 'uncertainty') {
+        legendText = 'Standard deviation of all MSs'
+      }
+
       legend
         .append('text')
         .attr('x', legendMargin.left + lineWidth)
         .attr('y', legendMargin.top + span)
         .attr('dx', '.5em')
         .attr('dy', '.4em')
-        .text(
-          'Average radiation readings and 95% confidence interval of all MSs'
-        )
+        .text(legendText)
+    },
+    drawPath(g, data, x, y, color) {
+      let medianLine = d3
+        .line()
+        .x(function (d) {
+          return x(d.date)
+        })
+        .y(function (d) {
+          return y(d.std)
+        })
+        .curve(d3.curveMonotoneX)
+
+      g.datum(data.displaydata)
+      let bisectDate = d3.bisector(function (d) {
+        return d.date
+      }).left
+
+      g.append('path')
+        .attr('d', medianLine)
+        .style('fill', 'none')
+        .style('stroke', color)
+        .style('stroke-width', 2)
+        .style('cursor', 'pointer')
+        .on('mousemove', mouseover)
+        .on('mouseout', mouseout)
+
+      let _this = this
+      let mytooltip = d3.select(`#${this.cid} .mytooltip`)
+      function mouseover() {
+        let realdata = data.realdata
+        let x0 = x.invert(d3.mouse(this)[0])
+        let i = bisectDate(realdata, x0, 1)
+        let d0 = realdata[i - 1],
+          d1 = realdata[i],
+          d = x0 - d0.date > d1.date - x0 ? d1 : d0
+        let timeFormat = d3.timeFormat('%Y-%m-%d %H:%M')
+        mytooltip
+          .html(
+            `time: ${timeFormat(
+              d.date
+            )} <br/>standard deviation: ${d.std.toFixed(2)}`
+          )
+          .style('left', () => {
+            if (d3.event.offsetX + 150 > _this.svgWidth) {
+              return d3.event.offsetX - 150 + 'px'
+            } else {
+              return d3.event.offsetX + 5 + 'px'
+            }
+          })
+          .style('top', () => {
+            if (d3.event.offsetY + 80 > _this.svgHeight) {
+              return d3.event.offsetY - 80 + 'px'
+            } else {
+              return d3.event.offsetY + 'px'
+            }
+          })
+          .style('display', 'inline-block')
+      }
+      function mouseout() {
+        mytooltip.style('display', 'none')
+      }
     },
     drawPathAndArea(g, data, x, y, color) {
       let upperInnerArea = d3
@@ -363,6 +451,7 @@ export default {
         .style('stroke-dasharray', 5)
     },
     drawTick(g, x, y, max) {
+      // uncertainty drawTick function differ
       g.append('text')
         .attr('x', '10px')
         .attr('y', y(14.6))
@@ -400,31 +489,46 @@ export default {
     makeChart(static_data, mobile_data) {
       let _this = this
       let max = 0
-      let max1 = d3.max(static_data, (d) => d.upper95)
-      let max2 = d3.max(mobile_data, (d) => d.upper95)
-      // let avg1 = d3.max(static_data, d => d.avg);
-      // let avg2 = d3.max(mobile_data, d => d.avg);
-      // let maxAvg = avg1 > avg2 ? avg1: avg2;
+
+      let max1, max2
+      if (this.datatye.length == 2) {
+        max1 = d3.max(static_data, (d) => d.upper95)
+        max2 = d3.max(mobile_data, (d) => d.upper95)
+      } else if (this.datatye.length == 0) {
+        return
+      } else if (this.datatye[0] == 'radiation') {
+        max1 = d3.max(static_data, (d) => d.avg)
+        max2 = d3.max(mobile_data, (d) => d.avg)
+      } else if (this.datatye[0] == 'uncertainty') {
+        max1 = d3.max(static_data, (d) => d.std)
+        max2 = d3.max(mobile_data, (d) => d.std)
+      }
+
       let realMax = (max = max1 > max2 ? max1 : max2)
 
       let staticData = { realdata: static_data, displaydata: static_data }
       let mobileData = { realdata: mobile_data, displaydata: mobile_data }
 
       if (this.checkedItem.length == 2) {
-        let md = mobile_data.map((d) => {
-          if (d.avg > 80) {
-            return {
-              date: d.date,
-              avg: 80 + (parseFloat(d.avg) - 80) * 0.03,
-              lower95: 80 + (parseFloat(d.avg) - 80) * 0.03 - 1.96 * d.sem,
-              upper95: 80 + (parseFloat(d.avg) - 80) * 0.03 + 1.96 * d.sem,
+        if (this.datatye.length == 2 || this.datatye[0] == 'radiation') {
+          let md = mobile_data.map((d) => {
+            if (d.avg > 80) {
+              return {
+                date: d.date,
+                avg: 80 + (parseFloat(d.avg) - 80) * 0.03,
+                lower95: 80 + (parseFloat(d.avg) - 80) * 0.03 - 1.96 * d.sem,
+                upper95: 80 + (parseFloat(d.avg) - 80) * 0.03 + 1.96 * d.sem,
+              }
+            } else {
+              return d
             }
-          } else {
-            return d
-          }
-        })
-        mobileData = { realdata: mobile_data, displaydata: md }
-        max2 = d3.max(md, (d) => d.upper95)
+          })
+          mobileData = { realdata: mobile_data, displaydata: md }
+          max2 =
+            this.datatye.length == 2
+              ? d3.max(md, (d) => d.upper95)
+              : d3.max(md, (d) => d.avg)
+        }
         max = max1 > max2 ? max1 : max2
       } else {
         if (this.checkedItem[0] == 'static') {
@@ -448,8 +552,11 @@ export default {
       let x = d3.scaleTime().range([0, chartWidth]).domain([begin, end])
       let y = d3.scaleLinear().range([chartHeight, 0]).domain([8, max])
 
-      let static_y = d3.scaleLinear().range([chartHeight, 0]).domain([14, max])
-      let mobile_y = d3.scaleLinear().range([chartHeight, 0]).domain([0, max])
+      let static_y, mobile_y
+      if (this.datatye.length == 2 || this.datatye[0] == 'radiation') {
+        static_y = d3.scaleLinear().range([chartHeight, 0]).domain([14, max])
+        mobile_y = d3.scaleLinear().range([chartHeight, 0]).domain([0, max])
+      }
 
       let xAxis = d3
         .axisBottom(x)
@@ -470,18 +577,21 @@ export default {
         .tickSizeOuter(0)
         .tickPadding(10)
         .ticks(0)
-      let yAxis_static = d3
-        .axisLeft(static_y)
-        .tickSizeInner(0)
-        .tickSizeOuter(0)
-        .tickPadding(10)
-        .ticks(0)
-      let yAxis_mobile = d3
-        .axisLeft(mobile_y)
-        .tickSizeInner(0)
-        .tickSizeOuter(0)
-        .tickPadding(10)
-        .ticks(0)
+      let yAxis_static, yAxis_mobile
+      if (this.datatye.length == 2 || this.datatye[0] == 'radiation') {
+        yAxis_static = d3
+          .axisLeft(static_y)
+          .tickSizeInner(0)
+          .tickSizeOuter(0)
+          .tickPadding(10)
+          .ticks(0)
+        yAxis_mobile = d3
+          .axisLeft(mobile_y)
+          .tickSizeInner(0)
+          .tickSizeOuter(0)
+          .tickPadding(10)
+          .ticks(0)
+      }
 
       let g = this.svg
         .append('g')
@@ -515,35 +625,52 @@ export default {
         this.addX(g, xAxis, margin, chartWidth, chartHeight)
         this.addY(g, yAxis, margin, chartWidth, chartHeight)
         this.addLegend(g)
-        this.drawPathAndArea(g, staticData, x, y, 'rgba(224, 4, 255, 0.6)')
-        this.drawPathAndArea(g, mobileData, x, y, 'rgba(54,95,139, 0.5)')
-        this.drawBaseline(g, basedata, x, y)
+        if (this.datatye.length == 2) {
+          this.drawPathAndArea(g, staticData, x, y, 'rgba(224, 4, 255, 0.6)')
+          this.drawPathAndArea(g, mobileData, x, y, 'rgba(54,95,139, 0.5)')
+        } else {
+          this.drawPath(g, staticData, x, y, 'rgba(224, 4, 255, 0.6)')
+          this.drawPath(g, mobileData, x, y, 'rgba(54,95,139, 0.6)')
+        }
+        if (this.datatye.length == 2 || this.datatye[0] == 'radiation') {
+          this.drawBaseline(g, basedata, x, y)
+        }
         this.drawTick(g, x, y, realMax)
       } else {
         if (this.checkedItem[0] == 'static') {
           this.addX(g, xAxis, margin, chartWidth, chartHeight)
           this.addY(g, yAxis_static, margin, chartWidth, chartHeight)
           this.addStaticLegend(g)
-          this.drawPathAndArea(
-            g,
-            staticData,
-            x,
-            static_y,
-            'rgba(224, 4, 255, 0.6)'
-          )
-          this.drawBaseline(g, basedata, x, static_y)
+          if (this.datatye.length == 2) {
+            this.drawPathAndArea(
+              g,
+              staticData,
+              x,
+              static_y,
+              'rgba(224, 4, 255, 0.6)'
+            )
+          } else {
+            this.drawPath(g, staticData, x, y, 'rgba(224, 4, 255, 0.6)')
+          }
+          if (this.datatye.length == 2 || this.datatye[0] == 'radiation') {
+            this.drawBaseline(g, basedata, x, static_y)
+          }
           this.drawTick(g, x, static_y)
         } else if (this.checkedItem[0] == 'mobile') {
           this.addX(g, xAxis, margin, chartWidth, chartHeight)
           this.addY(g, yAxis_mobile, margin, chartWidth, chartHeight)
           this.addMobileLegend(g)
-          this.drawPathAndArea(
-            g,
-            mobileData,
-            x,
-            mobile_y,
-            'rgba(54,95,139, 0.6)'
-          )
+          if (this.datatye.length == 2) {
+            this.drawPathAndArea(
+              g,
+              mobileData,
+              x,
+              mobile_y,
+              'rgba(54,95,139, 0.6)'
+            )
+          } else {
+            this.drawPath(g, mobileData, x, mobile_y, 'rgba(54,95,139, 0.6)')
+          }
           this.drawBaseline(g, basedata, x, mobile_y)
           this.drawTick(g, x, mobile_y)
         }

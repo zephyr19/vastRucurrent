@@ -8,6 +8,19 @@
         <div class="grid-content bottom_left_top">
           <treemap :cid="`treemap-container`"></treemap>
         </div>
+        <div class="grid-content bottom_left_bottom">
+          <div
+            v-for="(item, index) in sidTrendCharts"
+            :key="index"
+            class="innerdiv"
+          >
+            <sid-trend-chart
+              :cid="`trend_chart_container_${index}`"
+              :originData="item"
+              :componentStyle="sidTrendChartStyle"
+            ></sid-trend-chart>
+          </div>
+        </div>
       </el-col>
     </el-row>
   </div>
@@ -16,12 +29,14 @@
 <script>
 import TimeSeriesChart from './TimeSeriesChart.vue'
 import Treemap from './Treemap.vue'
+import SidTrendChart from './SidTrendChart.vue'
 import api from '../../api/index.js'
 
 export default {
   components: {
     TimeSeriesChart,
     Treemap,
+    SidTrendChart,
   },
   computed: {
     // datatype() {
