@@ -19,7 +19,8 @@ from backend import views
 
 urlpatterns = [
     path('admin/', admin.site.urls),
+    path('testdb/', views.testdb),
     path('calSensorClusters/', views.calSensorClusters),
     path('calTimeSeriesBySid/', views.calTimeSeriesBySid),
-    path('testdb/', views.testdb)
+    path('findSrBySid/', views.findSrBySid),
 ]

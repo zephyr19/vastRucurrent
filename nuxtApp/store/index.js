@@ -8,7 +8,7 @@ export const state = () => ({
     treemapCheckedState: ['static', 'mobile'],
     treemapState: 'treemap1',
     treemapData: {},
-    sidTrendChartStyle: null,
+    sidTrendChartStyle: 'line',
     playerSpeed: 'hour',
     playerState: false,
     mapControl: {
@@ -26,7 +26,7 @@ export const state = () => ({
         'StHimarkMapHouse',
     ],
     timeRange: {},
-    sidTrendCharts: {},
+    sidTrendCharts: [],
     defaultTimeRange: {
         begintime: '2020-04-06 00:00:00',
         endtime: '2020-04-11 00:00:00'
@@ -148,7 +148,7 @@ export const actions = {
         if (index != -1) {
             return;
         }
-        dispatch.getSidTrendChartData(params);
+        dispatch('getSidTrendChartData', params)
     },
     getSidTrendChartData({ commit }, params) {
         let parseDate = d3.timeParse('%Y-%m-%d %H:%M:%S');

@@ -119,22 +119,22 @@ export default {
       let category2 = max2list[1].name.startsWith('s') ? 'static' : 'mobile'
       let sid1 = max2list[0].name.substring(1, max2list[0].name.length)
       let sid2 = max2list[1].name.substring(1, max2list[1].name.length)
-      // this.$store.dispatch(
-      //   'defaultSensors',
-      //   Object.assign(
-      //     {},
-      //     { category: category1, sid: sid1 },
-      //     this.originData.timeRange || this.$store.state.defaultTimeRange
-      //   )
-      // )
-      // this.$store.dispatch(
-      //   'defaultSensors',
-      //   Object.assign(
-      //     {},
-      //     { category: category2, sid: sid2 },
-      //     this.originData.timeRange || this.$store.state.defaultTimeRange
-      //   )
-      // )
+      this.$store.dispatch(
+        'defaultSensors',
+        Object.assign(
+          {},
+          { category: category1, sid: sid1 },
+          this.originData.timeRange || this.$store.state.defaultTimeRange
+        )
+      )
+      this.$store.dispatch(
+        'defaultSensors',
+        Object.assign(
+          {},
+          { category: category2, sid: sid2 },
+          this.originData.timeRange || this.$store.state.defaultTimeRange
+        )
+      )
       let cluster = { name: 'cluster', children: [] }
       let childrenLength = data.children.length
       for (let i = 0; i < childrenLength; i++) {
@@ -356,8 +356,8 @@ export default {
             category = 'static'
           }
           sid = parseInt(d.data.name.substring(1, d.data.name.length))
-          this.$root.eventHub.$emit(
-            'sensorSelected',
+          this.$store.dispatch(
+            'defaultSensors',
             Object.assign(
               {},
               { category: category, sid: sid },

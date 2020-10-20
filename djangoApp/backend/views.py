@@ -17,6 +17,21 @@ def testdb(request):
 
 
 @csrf_exempt
+def findSrBySid(request):
+    if request.method == 'POST':
+        params = json.loads(request.body)
+        # 首先检查是静态传感器还是动态传感器
+        category = params['category']
+        if category == 'mobile':
+            responseData = MobileSensorReadings.objects.filter(
+                sid=params['sid']).values()
+        elif category == 'static':
+            responseData = StaticSensorReadings.objects.filter(
+                sid=params['sid']).values()
+        return HttpResponse(json.dumps(list(responseData), cls=DateEncoder), content_type='application/json')
+
+
+@csrf_exempt
 def calSensorClusters(request):
     if request.method == 'POST':
         params = json.loads(request.body)

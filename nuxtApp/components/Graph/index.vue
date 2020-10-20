@@ -31,6 +31,7 @@ import TimeSeriesChart from './TimeSeriesChart.vue'
 import Treemap from './Treemap.vue'
 import SidTrendChart from './SidTrendChart.vue'
 import api from '../../api/index.js'
+import { mapState } from 'vuex'
 
 export default {
   components: {
@@ -38,14 +39,10 @@ export default {
     Treemap,
     SidTrendChart,
   },
-  computed: {
-    // datatype() {
-    //   return this.$store.state.datatype
-    // },
-  },
+  computed: mapState(['sidTrendCharts', 'sidTrendChartStyle']),
   created() {
     api.getEvents().then((res) => {
-      console.log(res)
+      console.log('Connected to MySQL')
     })
   },
 }
@@ -71,5 +68,9 @@ export default {
 
 .bottom_left_top {
   height: 60%;
+}
+
+.bottom_left_bottom {
+  height: 40%;
 }
 </style>

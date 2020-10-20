@@ -47,5 +47,8 @@ export default {
     },
     getTimeSeriesBySid(params) {
         return apiClient.post('/calTimeSeriesBySid/', params)
+    },
+    getSrBySid(params) {
+        return apiClient.post("/findSrBySid/", params)
     }
 }

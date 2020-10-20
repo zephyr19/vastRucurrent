@@ -11,7 +11,7 @@
     <data-center />
     <radiation-trend />
     <sensor-clustering />
-    <indicator-clustering />
+    <individual-sensor />
     <gis-view />
     <animation-settings />
     <uncertainty-settings />

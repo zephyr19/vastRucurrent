@@ -7,8 +7,11 @@
 
 <script>
 import * as d3 from 'd3'
+import { drawSvgMixin } from '../../mixins/drawSvgMixin'
+
 export default {
   name: 'TimeSeriesChart',
+  mixins: [drawSvgMixin],
   props: {
     cid: {
       type: String,
@@ -39,28 +42,10 @@ export default {
   },
   mounted() {
     this.$nextTick(() => {
-      this.loadChart()
+      this.loadChart(`#${this.cid}`)
     })
   },
   methods: {
-    loadChart() {
-      this.selfAdaptionSvgSize()
-      this.drawSvg()
-      this.drawChart()
-    },
-    selfAdaptionSvgSize() {
-      let parentNode = document.querySelector(`#${this.cid}`).parentNode
-      this.svgWidth = parentNode.clientWidth
-      this.svgHeight = parentNode.clientHeight
-      d3.select(`#${this.cid}`).style('position', 'relative')
-    },
-    drawSvg() {
-      this.svg = d3
-        .select(`#${this.cid} .times_series_chart`)
-        .append('svg')
-        .attr('width', this.svgWidth)
-        .attr('height', this.svgHeight)
-    },
     drawChart() {
       let _this = this
       let parseDate = d3.timeParse('%Y-%m-%d %H:%M')
