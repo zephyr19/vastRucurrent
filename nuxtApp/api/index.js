@@ -14,6 +14,12 @@ export default {
     getEvents() {
         return apiClient.get('/testdb')
     },
+    getMobileIdwDataByTimeRange(params) {
+        return apiClient.post("/getMobileIdwDataByTimeRange/", params)
+    },
+    getLastCoordByTimeRange(params) {
+        return apiClient.post('/getLastCoordByTimeRange/', params)
+    },
     getTreemapDataByTimeRange(params) {
         // if (this.treemapCheckedState.length == 2) {
         return apiClient.post("/calSensorClusters/", params)

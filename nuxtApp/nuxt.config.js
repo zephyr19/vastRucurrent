@@ -17,6 +17,7 @@ export default {
   css: ['element-ui/lib/theme-chalk/index.css'],
 
   // Plugins to run before rendering page (https://go.nuxtjs.dev/config-plugins)
+  // plugins: ['@/plugins/element-ui', '@plugins/ol.js'],
   plugins: ['@/plugins/element-ui'],
 
   // Auto import components (https://go.nuxtjs.dev/config-components)
@@ -43,6 +44,9 @@ export default {
   build: {
     transpile: [/^element-ui/],
   },
+  // build: {
+  //   transpile: [/^element-ui/, 'ol'],
+  // },
 
   devServer: {
     proxy: 'http://localhost:8000'

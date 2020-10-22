@@ -43,10 +43,6 @@ export default {
       svgHeight: 0,
     }
   },
-  created: function () {},
-  // 最好在组件销毁前
-  // 清除事件监听
-  beforeDestroy: function () {},
   mounted() {
     this.$nextTick(() => {
       this.loadChart()

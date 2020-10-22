@@ -22,6 +22,9 @@
           </div>
         </div>
       </el-col>
+      <el-col :span="15" class="bottom_right">
+        <gis-view />
+      </el-col>
     </el-row>
   </div>
 </template>
@@ -30,6 +33,8 @@
 import TimeSeriesChart from './TimeSeriesChart.vue'
 import Treemap from './Treemap.vue'
 import SidTrendChart from './SidTrendChart.vue'
+import GisView from './GisView.vue'
+
 import api from '../../api/index.js'
 import { mapState } from 'vuex'
 
@@ -38,6 +43,7 @@ export default {
     TimeSeriesChart,
     Treemap,
     SidTrendChart,
+    GisView,
   },
   computed: mapState(['sidTrendCharts', 'sidTrendChartStyle']),
   created() {
@@ -62,7 +68,8 @@ export default {
   height: 84%;
 }
 
-.bottom_left {
+.bottom_left,
+.bottom_right {
   height: 100%;
 }
 
@@ -72,5 +79,9 @@ export default {
 
 .bottom_left_bottom {
   height: 40%;
+}
+
+.bottom_left_bottom .innerdiv {
+  height: 50%;
 }
 </style>

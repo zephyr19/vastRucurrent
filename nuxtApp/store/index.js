@@ -34,6 +34,22 @@ export const state = () => ({
     currentPlayerTime: null,
 })
 
+export const getters = {
+    datatypeIndex() {
+        if (this.datatype == null || this.datatype.length == 0) {
+            throw new Error()
+        }
+        if (this.datatype.length == 2) {
+            return 2;
+        } else if (this.datatype[0] == 'radiation') {
+            return 0;
+        } else if (this.datatype[0] == 'uncertainty') {
+            return 1;
+        }
+        throw new Error("")
+    }
+}
+
 export const mutations = {
     updateDatatype(state, value) {
         state.datatype = value
@@ -84,44 +100,44 @@ import api from '../api/index'
 import * as d3 from 'd3'
 
 export const actions = {
-    getTreemapDataByTimeRange({ commit }, params) {
-        // if (this.treemapCheckedState.length == 2) {
-        api.apiClient.post("/calSensorClusters/", params).then(response => {
-            let treemap = {
-                data: response.data,
-                timeRange: params,
-                sensorType: 'both'
-            }
-            console.log(response)
-            commit('updateTreemapData', treemap)
-        })
-        // }
-        // if (this.treemapCheckedState.length == 1 && this.treemapCheckedState[0] == 'static') {
-        //     axios.post("/calStaticSensorClusters/", params).then(response => {
-        //         this.treemap1 = {
-        //             state: this.treemapState,
-        //             data: response.data,
-        //             timeRange: params,
-        //             checkedState: this.treemapCheckedState,
-        //             sensorType: 'static'
-        //         }
-        //     })
+    getTreemapDataByTimeRange({ state, commit }, params) {
+        if (state.treemapCheckedState.length == 2) {
+            api.apiClient.post("/calSensorClusters/", params).then(response => {
+                let treemap = {
+                    data: response.data,
+                    timeRange: params,
+                    sensorType: 'both'
+                }
+                console.log(response)
+                commit('updateTreemapData', treemap)
+            })
+        }
+        if (state.treemapCheckedState.length == 1 && state.treemapCheckedState[0] == 'static') {
+            axios.post("/calStaticSensorClusters/", params).then(response => {
+                let treemap = {
+                    state: state.treemapState,
+                    data: response.data,
+                    timeRange: params,
+                    checkedState: state.treemapCheckedState,
+                    sensorType: 'static'
+                }
+                commit('updateTreemapData', treemap)
+            })
 
-        // }
-        // if (this.treemapCheckedState.length == 1 && this.treemapCheckedState[0] == 'mobile') {
-        //     axios.post("/calMobileSensorClusters/", params).then(response => {
-        //         this.treemap1 = {
-        //             state: this.treemapState,
-        //             data: response.data,
-        //             timeRange: params,
-        //             checkedState: this.treemapCheckedState,
-        //             sensorType: 'mobile'
-        //         }
-        //     })
+        }
+        if (state.treemapCheckedState.length == 1 && state.treemapCheckedState[0] == 'mobile') {
+            axios.post("/calMobileSensorClusters/", params).then(response => {
+                let treemap = {
+                    state: state.treemapState,
+                    data: response.data,
+                    timeRange: params,
+                    checkedState: state.treemapCheckedState,
+                    sensorType: 'mobile'
+                }
+                commit('updateTreemapData', treemap)
+            })
 
-        // }
-
-
+        }
     },
     timeRangeUpdated({ state, commit, dispatch }, params) {
         commit('updateTimeRange', params)

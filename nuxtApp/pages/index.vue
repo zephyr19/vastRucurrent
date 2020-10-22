@@ -2,6 +2,7 @@
   <div class="container">
     <panel />
     <graph />
+    <!-- <test /> -->
   </div>
 </template>
 
@@ -9,11 +10,14 @@
 import 'element-ui/lib/theme-chalk/display.css'
 import Panel from '../components/Panel/index.vue'
 import Graph from '../components/Graph/index.vue'
+// import test from '../components/test.vue'
 
 export default {
   name: 'app',
   components: {
     Panel,
+    Graph,
+    // test,
   },
   data() {
     return {

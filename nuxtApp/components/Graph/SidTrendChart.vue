@@ -92,6 +92,8 @@ export default {
     selfAdaptionSvgSize() {
       let parentNode = document.querySelector(`#${this.cid}`).parentNode
       this.svgWidth = parentNode.clientWidth
+      console.log(parentNode)
+      console.log(document.querySelector(`#${this.cid} .control`))
       this.svgHeight =
         parentNode.clientHeight -
         document.querySelector(`#${this.cid} .control`).clientHeight
@@ -240,17 +242,6 @@ export default {
           return y(d.avg)
         })
         .curve(d3.curveMonotoneX)
-      // .defined((d, i, data) => {
-      //   if(i == 0) {
-      //     return true;
-      //   } else {
-      //     if(data[i].time.getTime() - data[i-1].time.getTime() <= 3600 * 1000) {
-      //       return true;
-      //     } else {
-      //       return false;
-      //     }
-      //   }
-      // });
 
       let medianLine = d3
         .line()
@@ -261,17 +252,6 @@ export default {
           return y(d.avg)
         })
         .curve(d3.curveMonotoneX)
-      // .defined((d, i, data) => {
-      //   if(i == 0) {
-      //     return true;
-      //   } else {
-      //     if(data[i].time.getTime() - data[i-1].time.getTime() <= 3600 * 1000) {
-      //       return true;
-      //     } else {
-      //       return false;
-      //     }
-      //   }
-      // });
 
       let lowerInnerArea = d3
         .area()
@@ -285,17 +265,6 @@ export default {
           return y(d.lower95)
         })
         .curve(d3.curveMonotoneX)
-      // .defined((d, i, data) => {
-      //   if(i == 0) {
-      //     return true;
-      //   } else {
-      //     if(data[i].time.getTime() - data[i-1].time.getTime() <= 3600 * 1000) {
-      //       return true;
-      //     } else {
-      //       return false;
-      //     }
-      //   }
-      // });
 
       g.datum(data)
       let bisectDate = d3.bisector(function (d) {
@@ -473,14 +442,6 @@ export default {
         .attr('fill', '#999')
         .style('text-anchor', 'end')
         .text('14.6')
-      // let domain = y.domain();
-      // g.append('text')
-      //   .attr('x', '-10')
-      //   .attr('y', y(domain[0]))
-      //   .attr('dy', '.5em')
-      //   .attr("font-size",10)
-      //   .style('text-anchor', 'end')
-      //   .text(domain[0]);
     },
     clearAllg() {
       d3.select(`#${this.cid} svg`).selectAll('g').remove()

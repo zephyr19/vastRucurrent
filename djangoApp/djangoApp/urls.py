@@ -23,4 +23,9 @@ urlpatterns = [
     path('calSensorClusters/', views.calSensorClusters),
     path('calTimeSeriesBySid/', views.calTimeSeriesBySid),
     path('findSrBySid/', views.findSrBySid),
+    path('getMobileIdwDataByTimeRange/', views.getMobileIdwDataByTimeRange),
+    path('getStaticIdwDataByTimeRange/', views.getStaticIdwDataByTimeRange),
+    path('getPathByTimeRangeAndSid/', views.getPathByTimeRangeAndSid),
+    path('getLastCoordByTimeRange/', views.getLastCoordByTimeRange),
+    path('getSensorReadingsByTime/', views.getSensorReadingsByTime)
 ]
